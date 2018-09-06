@@ -1,0 +1,38 @@
+version: '2'
+services:
+    db:
+        image: mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: backend
+            MYSQL_USER: backend
+            MYSQL_PASSWORD: backend
+    php:
+        build: ./docker/php-fpm
+        expose:
+            - "9000"
+        volumes:
+            - ./backend:/var/www/backend
+            - ./logs/backend:/var/www/backend/var/logs
+        links:
+            - db
+    nginx:
+        build: ./docker/nginx
+        ports:
+            - "80:80"
+        links:
+            - php
+        volumes_from:
+            - php
+        volumes:
+            - ./logs/nginx/:/var/log/nginx
+    elk:
+        image: willdurand/elk
+        ports:
+            - "81:80"
+        volumes:
+            - ./elk/logstash:/etc/logstash
+            - ./elk/logstash/patterns:/opt/logstash/patterns
+        volumes_from:
+            - php
+            - nginx
