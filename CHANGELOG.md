@@ -1,4 +1,6 @@
 ## [Unreleased]
+- Install laravel 5.6
+- Change port 8888
 
 ## [0.0.1] - 2018-09-06
 ### Added
